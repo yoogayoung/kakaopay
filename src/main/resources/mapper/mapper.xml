@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yoo.kakaopay.mapper.ApiMapper">
+
+    <select id="selectUserInfo" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            user_id
+            ,IFNULL(barcode,'') AS barcode
+        FROM user_table
+        WHERE user_id = #{userId}
+	</select>
+
+    <select id="checkBarcode" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            COUNT(*) AS cnt
+        FROM user_table
+        WHERE barcode = #{barcode}
+	</select>
+
+    <update id="updateBarcode" parameterType="HashMap">
+        UPDATE user_table SET
+            barcode = #{barcode}
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="checkPartner" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            COUNT(*) AS cnt
+        FROM partner_table
+        WHERE partner_id = #{partnerId}
+	</select>
+
+    <insert id="insertPointInfo" parameterType="HashMap" useGeneratedKeys="true" keyProperty="pointSeq">
+        INSERT INTO point_table (barcode, partner_id, type, point, approved_at)
+        VALUES (#{barcode}, #{partnerId}, #{type}, #{point}, sysdate())
+    </insert>
+
+    <select id="selectPoint" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            sum(point) AS point
+        FROM point_table AS A
+        INNER JOIN partner_table AS B
+            ON A.partner_id = B.partner_id
+        WHERE B.category = (SELECT category FROM partner_table WHERE partner_id = #{partnerId})
+            AND barcode = #{barcode}
+            AND A.type = #{type}
+        GROUP BY barcode, type
+	</select>
+
+    <select id="selectPointList" parameterType="HashMap" resultType="HashMap">
+        SELECT
+            DATE_FORMAT(A.approved_at, '%Y-%m-%d %H:%i:%s') AS approved_at
+            ,A.type
+            ,B.category
+            ,B.partner_name
+        FROM point_table AS A
+        INNER JOIN partner_table AS B
+            ON A.partner_id = B.partner_id
+        WHERE A.approved_at BETWEEN #{startDt} AND #{endDt}
+            AND A.barcode = #{barcode}
+	</select>
+
+</mapper>
