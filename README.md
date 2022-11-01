@@ -1,7 +1,7 @@
 # 카카오페이 서버 개발 직무 과제
 ## _멤버십 서비스 구현_
 
-2022.10.20 진행했던 과제 업로드
+> Spring Boot로 API 서버 구현
 
 ### 1. 서비스 설명
 - 카카오페이에는 멤버십 서비스가 있습니다. 해당 서비스를 만들어봅시다.
@@ -95,4 +95,3 @@
 - Http Method: POST
 - Request: {"barcode":"7281013626", "startDt":"2022-09-21", "point":"2022-09-22"}
 - Response: {"history":[{"approved_at":"2022-09-21 10:10:10","type":"use","category":"A","partner_name":"F마트"},{"approved_at":"2022-09-21 20:10:10","type":"earn","category":"A","partner_name":"Z마트"}]}
-
